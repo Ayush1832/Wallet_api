@@ -13,9 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendVerificationEmail = (user) => {
-    const token = jwt.sign({ user: { id: user.id } }, config.jwtSecret, {
-        expiresIn: '1h',
-    });
+    const token = jwt.sign({ user: { id: user.id } }, config.jwtSecret);
 
     const url = `http://localhost:${config.port}/api/auth/verify/${token}`;
 
@@ -82,9 +80,9 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
-        // if (!user.isVerified) {
-        //     return res.status(400).json({ msg: 'Please verify your email first' });
-        // }
+        if (!user.isVerified) {
+            return res.status(400).json({ msg: 'Please verify your email first' });
+        }
 
         const payload = {
             user: {
@@ -92,7 +90,7 @@ exports.login = async (req, res) => {
             },
         };
 
-        jwt.sign(payload, config.jwtSecret, { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(payload, config.jwtSecret, (err, token) => {
             if (err) throw err;
             res.json({ token });
         });

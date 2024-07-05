@@ -5,7 +5,7 @@ const User = require('../models/User');
 module.exports = async (req, res, next) => {
     const token = req.header('Authorization');
     if (!token) {
-        return res.status(401).json({ msg: 'No token, authorization denied' });
+        return res.status(401).json({ msg: 'Authorization denied' });
     }
 
     try {
