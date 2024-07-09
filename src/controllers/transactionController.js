@@ -1,7 +1,8 @@
 const User = require('../models/User');
-const Transaction = require('/models/Transaction');
+
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
+const Transaction = require('../models/Transaction');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -17,7 +18,7 @@ const sendTransactionEmail = (user, status) => {
 
     transporter.sendMail({
         to: user.email,
-        subject,
+        subject :subject,
         text: message,
     });
 };
