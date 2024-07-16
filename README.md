@@ -3,6 +3,8 @@
 
 This project is a wallet application API built using Node.js, Express, and MongoDB. It supports user registration, email verification, login with password, JWT-based session management, fake balance on signup, money transfer between users, viewing transaction history, and email notifications for transaction success or failure.
 
+POSTMAN Documentation- https://documenter.getpostman.com/view/36729587/2sA3kPr5Wj
+
 ## Features
 
 - User Signup with Email Verification
@@ -137,7 +139,6 @@ PORT=3000
 - JWT token expiration and validation.
 - Input validation and sanitization to prevent common security vulnerabilities.
 
-  Render- https://wallet-api-1.onrender.com
 
 ---
 
