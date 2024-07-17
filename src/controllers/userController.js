@@ -1,4 +1,5 @@
-import User from '../models/User.js'; 
+
+import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
@@ -30,6 +31,7 @@ export const registerUser = async (req, res) => {
   const user = await User.create({
     email,
     password,
+    balance: 1000, // fake balance on signup
   });
 
   if (user) {
