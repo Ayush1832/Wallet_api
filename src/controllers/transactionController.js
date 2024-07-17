@@ -1,4 +1,6 @@
-import User from '../models/User.js'; 
+
+import User from '../models/User.js';
+import Transaction from '../models/Transaction.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -23,6 +25,12 @@ export const transferFunds = async (req, res) => {
   }
 
   if (sender.balance < amount) {
+    const transaction = await Transaction.create({
+      sender: req.user._id,
+      recipient: recipient._id,
+      amount,
+      status: 'failed',
+    });
     return res.status(400).json({ message: 'Insufficient funds' });
   }
 
@@ -31,6 +39,13 @@ export const transferFunds = async (req, res) => {
 
   await sender.save();
   await recipient.save();
+
+  const transaction = await Transaction.create({
+    sender: req.user._id,
+    recipient: recipient._id,
+    amount,
+    status: 'success',
+  });
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -47,16 +62,14 @@ export const transferFunds = async (req, res) => {
     }
   });
 
-  res.json({ message: 'Transfer successful' });
+  res.json({ message: 'Transfer successful', transaction });
 };
 
 export const getTransactions = async (req, res) => {
-  // Assuming transactions are recorded elsewhere or use MongoDB for simplicity
-  const transactions = [
-    // Dummy transaction data
-    { id: 1, sender: 'user1@example.com', recipient: 'user2@example.com', amount: 100, status: 'success' },
-    { id: 2, sender: 'user1@example.com', recipient: 'user3@example.com', amount: 200, status: 'failed' },
-  ];
-
-  res.json(transactions);
+  try {
+    const transactions = await Transaction.find({ sender: req.user._id }).populate('recipient', 'email');
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
